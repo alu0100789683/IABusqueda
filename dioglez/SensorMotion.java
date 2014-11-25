@@ -23,7 +23,7 @@ public class SensorMotion {
     public void changeDirection(){
         // AQUI VA LA LÓGICA
         
-        /*
+        
         if(isBusyBottom()){
             this.robot.direction = Robot.DIRECTION_RIGHT;
             if(isBusyRight()){
@@ -32,7 +32,7 @@ public class SensorMotion {
         }
         if(!isBusyBottom()){
             this.robot.direction = Robot.DIRECTION_BOTTOM;
-        }*/
+        }
         
         //this.robot.direction = heuristic.reload();
         

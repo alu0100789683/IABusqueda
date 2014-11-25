@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.util.Random;
 
 /**
  *
@@ -19,7 +20,7 @@ public class Matrix {
     
     public boolean [][] busy;
     private SimulatorPanel panel;
-    public Dimension size;
+    private Dimension size;
     private int span;
     
     public Matrix(int span, Dimension size, SimulatorPanel panel){
@@ -36,6 +37,18 @@ public class Matrix {
                busy[i][j] = false;
            } 
         }
+    }
+    public void makeRandomBusy(){
+        Random rnd = new Random(System.currentTimeMillis());
+        for (int i = 0 ; i<busy.length ; i++) {
+            for (int j = 0 ; j<busy[i].length; j++) {
+                if(rnd.nextDouble() < 0.2){
+                    busy[i][j] = true;
+                }else{
+                    busy[i][j] = false;
+                }
+            } 
+        } 
     }
     public void print(Graphics g){
         // print bounds
@@ -78,6 +91,14 @@ public class Matrix {
         initBusy();
         this.span = span;
         this.size = size;
+    }
+
+    int getWidth() {
+        return size.width;
+    }
+
+    int getHeight() {
+        return size.height;
     }
 
     

@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
 /**
@@ -22,6 +23,7 @@ import javax.swing.JScrollPane;
  */
 public class MainFrame extends JFrame{
     public SimulatorPanel matrixPanel;
+    public ControlPanel controlPanel;
     
     private JMenuBar menuBarPanel;
     
@@ -69,8 +71,11 @@ public class MainFrame extends JFrame{
                 "src/org/texture/bg.jpg", 
                 "src/org/texture/rock.png",
                 "src/org/texture/robot.png",
+                "src/org/texture/finish.png",
                 3,4,1,matrix_size);
         // End simulator panel
+        
+        
         
         menuBarPanel = new JMenuBar();
         archiveMenu = new JMenu();
@@ -127,10 +132,10 @@ public class MainFrame extends JFrame{
         
         //design
         randomItemBar.setText("Generar obstaculos");
-        openInsertItemBar.setText("Insertar obstaculos ...");
+        openInsertItemBar.setText("Insertar meta");
         
         randomItemBar.setName("RandomItemBar");
-        openInsertItemBar.setName("OpenInsertItemBar");
+        openInsertItemBar.setName("FinishInsertItemBar");
         
         randomItemBar.addMouseListener(new MouseController(this));
         openInsertItemBar.addMouseListener(new MouseController(this));
@@ -175,7 +180,7 @@ public class MainFrame extends JFrame{
             public void run() {
                 try {
                     while(true){
-                        Thread.sleep(100);
+                        Thread.sleep(50);
                         matrixPanel.robot.run();
                         matrixPanel.repaint();
                     }
@@ -184,7 +189,7 @@ public class MainFrame extends JFrame{
                 }
             }
         });
-        animate.run(); 
+        animate.run();
     }
     public void destroy(){
         super.dispose();

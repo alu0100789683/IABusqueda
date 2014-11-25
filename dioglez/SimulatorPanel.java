@@ -23,7 +23,7 @@ public class SimulatorPanel extends JPanel{
     public Robot robot;
     
     private Dimension size;
-    private int span;
+    public  int span;
     
     private boolean printTerrain;
     private boolean printObject;
@@ -32,10 +32,16 @@ public class SimulatorPanel extends JPanel{
     public boolean showMatrix;
     public Matrix matrix;
     
+    private boolean showFinish;
+    private Image finishImg;
+    private Point finishP;
+    
     public SimulatorPanel(Dimension size, int span){
         super();
         
         this.showMatrix = false;
+        this.showFinish = true;
+        this.finishP = new Point(0, 0);
         this.span = span;
         this.size = convetDimension(size, span);
         this.setPreferredSize(this.size);
@@ -46,7 +52,9 @@ public class SimulatorPanel extends JPanel{
         this.printObject = false;
         this.printRobot = false;
         
-        this.addMouseListener(new SimulatorMouseController(this));
+        SimulatorMouseController mc = new SimulatorMouseController(this);
+        this.addMouseListener(mc);
+        this.addMouseMotionListener(mc);
         
     }
     @Override
@@ -65,8 +73,8 @@ public class SimulatorPanel extends JPanel{
         
         //STATE Generate random object
         if(printObject){
-            for (int i = 0; i < matrix.size.getWidth(); i++) {
-                for (int j = 0; j < matrix.size.getHeight(); j++) {
+            for (int i = 0; i < matrix.getWidth(); i++) {
+                for (int j = 0; j < matrix.getHeight(); j++) {
                     if(matrix.busy[i][j]){
                         g.drawImage(obstacle, matrix.screanerPosition(new Point(i,j)).x,matrix.screanerPosition(new Point(i,j)).y, obstacle.getWidth(this), obstacle.getHeight(this), this);
                     }
@@ -80,6 +88,9 @@ public class SimulatorPanel extends JPanel{
         if(showMatrix){
             matrix.print(g);
         }
+        if(showFinish){
+            g.drawImage(finishImg, finishP.x, finishP.y, finishImg.getWidth(this), finishImg.getHeight(this), this);
+        }
         
     }
     public void print(boolean terrain, boolean object, boolean robot){
@@ -90,7 +101,8 @@ public class SimulatorPanel extends JPanel{
     }
     public void init(String backgroundStr,
             String obstacleStr,
-            String robotStr, 
+            String robotStr,
+            String finishStr,
             int robotLimitx, 
             int robotLimity, 
             int hardMove,
@@ -98,7 +110,7 @@ public class SimulatorPanel extends JPanel{
         
         this.span = span;
         this.background = Toolkit.getDefaultToolkit().createImage(backgroundStr);
-        
+        this.finishImg = Toolkit.getDefaultToolkit().createImage(finishStr);
         this.robot = new Robot(this,robotStr,robotLimitx, robotLimity, hardMove);
         this.obstacle = Toolkit.getDefaultToolkit().createImage(obstacleStr);
         
@@ -133,5 +145,9 @@ public class SimulatorPanel extends JPanel{
 
     void addObject(Point p) {
         matrix.busy[p.x][p.y] = true;
+    }
+
+    void moveFlag(Point point) {
+        finishP = point;
     }
 }

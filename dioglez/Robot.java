@@ -28,7 +28,7 @@ public class Robot {
     private Point p;
     public boolean actived;
     
-    private int hardMove;
+    public int hardMove;
     
     public Robot(SimulatorPanel father, String src,int limitx, int limity, int hardMove){
         this.direction = DIRECTION_RIGHT;

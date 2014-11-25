@@ -9,12 +9,13 @@ package org.dioglez;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 /**
  *
  * @author eduardo
  */
-public class SimulatorMouseController implements MouseListener{
+public class SimulatorMouseController implements MouseMotionListener, MouseListener{
     
     public SimulatorPanel panel;
     
@@ -40,7 +41,7 @@ public class SimulatorMouseController implements MouseListener{
 
     @Override
     public void mouseReleased(MouseEvent e) {
-    
+        
     }
 
     @Override
@@ -51,5 +52,15 @@ public class SimulatorMouseController implements MouseListener{
     @Override
     public void mouseExited(MouseEvent e) {
     
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        panel.moveFlag(e.getPoint());
     }
 }
