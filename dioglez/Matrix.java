@@ -19,12 +19,14 @@ import java.util.Random;
 public class Matrix {
     
     public boolean [][] busy;
+    public boolean [][] visit;
     private SimulatorPanel panel;
     private Dimension size;
     private int span;
     
     public Matrix(int span, Dimension size, SimulatorPanel panel){
         this.busy = new boolean[size.width][size.height];
+        this.visit = new boolean[size.width][size.height];
         initBusy();
         this.span = span;
         this.size = size;
@@ -52,14 +54,16 @@ public class Matrix {
     }
     public void print(Graphics g){
         // print bounds
+        Point p = screanerPosition(new Point(size.width,size.height));
+        
         g.setColor(Color.RED);
-        g.drawRect(0, 0, size.width, size.height);
+        g.drawRect(0, 0, p.x, p.y);
         // print matrix
-        for(int i = 0;i < size.width;i+=this.span){
-            g.drawLine(i, 0, i, size.height);
+        for(int i = 0;i < p.x;i+=this.span){
+            g.drawLine(i, 0, i, p.y);
         }
-        for(int i = 0; i< size.height;i+=this.span){
-            g.drawLine(0, i, size.width, i);
+        for(int i = 0; i< p.y;i+=this.span){
+            g.drawLine(0, i, p.x, i);
         }
     }
     
@@ -78,8 +82,7 @@ public class Matrix {
     }
     
     public boolean isBusy(Point p){
-        if(p.x <= parsePosition(new Point(size.width,size.height)).x - 1
-                && p.y <= parsePosition(new Point(size.width,size.height)).y - 1){
+        if(p.x >= 0 && p.y >= 0 && p.x < size.width && p.y < size.height){
             return busy[p.x][p.y]; 
         }else{
             return true;
@@ -87,10 +90,14 @@ public class Matrix {
     }
 
     void updateSize(int span, Dimension size) {
-        this.busy = new boolean[size.width][size.height];
+        Point parsep = parsePosition(new Point(size.width,size.height));
+        
+        this.busy = new boolean[parsep.x][parsep.y];
+        this.visit = new boolean[parsep.x][parsep.y];
         initBusy();
+        
         this.span = span;
-        this.size = size;
+        this.size = new Dimension(parsep.x,parsep.y);
     }
 
     int getWidth() {
@@ -100,6 +107,7 @@ public class Matrix {
     int getHeight() {
         return size.height;
     }
-
-    
+    public static int manhattan(Point a, Point b){
+        return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+    }
 }

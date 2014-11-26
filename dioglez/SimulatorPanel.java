@@ -35,13 +35,15 @@ public class SimulatorPanel extends JPanel{
     private boolean showFinish;
     private Image finishImg;
     private Point finishP;
+    boolean isMoveFlag;
     
     public SimulatorPanel(Dimension size, int span){
         super();
         
         this.showMatrix = false;
-        this.showFinish = true;
+        this.showFinish = false;
         this.finishP = new Point(0, 0);
+        this.isMoveFlag = false;
         this.span = span;
         this.size = convetDimension(size, span);
         this.setPreferredSize(this.size);
@@ -89,7 +91,7 @@ public class SimulatorPanel extends JPanel{
             matrix.print(g);
         }
         if(showFinish){
-            g.drawImage(finishImg, finishP.x, finishP.y, finishImg.getWidth(this), finishImg.getHeight(this), this);
+            g.drawImage(finishImg, matrix.screanerPosition(finishP).x, matrix.screanerPosition(finishP).y, finishImg.getWidth(this), finishImg.getHeight(this), this);
         }
         
     }
@@ -130,6 +132,18 @@ public class SimulatorPanel extends JPanel{
     public void destroy(){
     
     }
+    public void modFinish(){
+        if(showFinish){
+            if(isMoveFlag){
+                isMoveFlag = false;
+            }else{ 
+                isMoveFlag = true;
+            }
+        }else{
+            isMoveFlag = true;
+            showFinish = true;
+        }
+    }
 
     private Dimension convetDimension(Dimension size, int span) {
         
@@ -142,12 +156,22 @@ public class SimulatorPanel extends JPanel{
         this.setPreferredSize(this.size);
         this.matrix.updateSize(this.span, getPreferredSize());
     }
-
+    public Point getFlag(){
+        return finishP;
+    }
     void addObject(Point p) {
         matrix.busy[p.x][p.y] = true;
     }
 
     void moveFlag(Point point) {
-        finishP = point;
+        finishP = matrix.parsePosition(point);
+    }
+
+    boolean isFinish() {
+        return this.isMoveFlag;
+    }
+
+    void addObjectFinish(Point p) {
+        
     }
 }

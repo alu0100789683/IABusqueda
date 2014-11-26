@@ -23,7 +23,7 @@ public class Robot {
     
     public int direction;
     public SimulatorPanel simulatorPanel;
-    private SensorMotion sensor;
+    public SensorMotion sensor;
     private AnimatedIcon image;
     private Point p;
     public boolean actived;
@@ -116,7 +116,6 @@ public class Robot {
         image.nextFrame();
         p.x -= hardMove;
     }
-
     public void reset() {
         this.actived = false;
         this.p = new Point(0, 0);

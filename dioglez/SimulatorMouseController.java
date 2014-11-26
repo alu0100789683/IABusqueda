@@ -31,10 +31,21 @@ public class SimulatorMouseController implements MouseMotionListener, MouseListe
     public void mousePressed(MouseEvent e) {
         if(e.getSource().getClass() == SimulatorPanel.class){
             Point p = panel.matrix.parsePosition(e.getPoint());
-            if(!panel.matrix.busy[p.x][p.y]){
-                panel.addObject(p);
+            if(panel.isFinish()){
+                if(panel.matrix.busy.length > p.x 
+                        && panel.matrix.busy[p.x].length > p.y){
+                    panel.addObjectFinish(p);
+                    panel.modFinish();
+                }
             }else{
-                panel.matrix.busy[p.x][p.y] = false;
+                if(panel.matrix.busy.length > p.x 
+                        && panel.matrix.busy[p.x].length > p.y){
+                    if(!panel.matrix.busy[p.x][p.y]){
+                        panel.addObject(p);
+                    }else{
+                        panel.matrix.busy[p.x][p.y] = false;
+                    }
+                }
             }
         }
     }
@@ -61,6 +72,8 @@ public class SimulatorMouseController implements MouseMotionListener, MouseListe
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        panel.moveFlag(e.getPoint());
+        if(panel.isMoveFlag){   
+            panel.moveFlag(e.getPoint());
+        }
     }
 }

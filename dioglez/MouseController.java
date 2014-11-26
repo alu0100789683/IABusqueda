@@ -81,6 +81,7 @@ public class MouseController implements MouseListener{
                             
                             HashMap<String,Integer> map = controlPanel.getValues();
                             frame.matrixPanel.robot.hardMove = map.get("sliderHard");
+                            frame.matrixPanel.robot.sensor.distance = frame.matrixPanel.matrix.getWidth() + frame.matrixPanel.getHeight();
                             frame.matrixPanel.robot.actived=true;
                         }
                     }
@@ -97,7 +98,7 @@ public class MouseController implements MouseListener{
                     frame.matrixPanel.matrix.makeRandomBusy();
                 break;
                 case "FinishInsertItemBar":
-                    //
+                    frame.matrixPanel.modFinish();
                 break;
                 default:
                     JOptionPane.showMessageDialog(frame, "Aún no se ha definido esa funcionalidad","Error",JOptionPane.ERROR_MESSAGE);
