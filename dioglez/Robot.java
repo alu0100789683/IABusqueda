@@ -64,6 +64,7 @@ public class Robot {
         if(actived){
             if(simulatorPanel.matrix.isStrictPosition(p)){
                 this.direction = Robot.DIRECTION_STOP;
+                this.sensor.addVisit(this.getParsePoint());
                 sensor.changeDirection();
             }
             executeAction();

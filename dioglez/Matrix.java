@@ -19,14 +19,14 @@ import java.util.Random;
 public class Matrix {
     
     public boolean [][] busy;
-    public boolean [][] visit;
-    private SimulatorPanel panel;
+    private final SimulatorPanel panel;
     private Dimension size;
     private int span;
     
     public Matrix(int span, Dimension size, SimulatorPanel panel){
         this.busy = new boolean[size.width][size.height];
-        this.visit = new boolean[size.width][size.height];
+        
+        
         initBusy();
         this.span = span;
         this.size = size;
@@ -93,11 +93,14 @@ public class Matrix {
         Point parsep = parsePosition(new Point(size.width,size.height));
         
         this.busy = new boolean[parsep.x][parsep.y];
-        this.visit = new boolean[parsep.x][parsep.y];
+        this.panel.robot.sensor.renew(size);
+        
         initBusy();
         
         this.span = span;
         this.size = new Dimension(parsep.x,parsep.y);
+        
+        
     }
 
     int getWidth() {

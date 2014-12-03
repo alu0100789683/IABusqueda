@@ -6,6 +6,7 @@
 
 package org.dioglez;
 
+import java.awt.Dimension;
 import java.awt.Point;
 import javax.swing.JOptionPane;
 
@@ -16,67 +17,55 @@ import javax.swing.JOptionPane;
 public class SensorMotion {
     private Robot robot;
     private Matrix matrix;
+    
+    public Node way;
+    public boolean [][] visit;
+    public boolean [][] object;
+    
     public int distance;
     private int posible_move;
+    private boolean return_mode;
     
     public SensorMotion(Robot father,Matrix matrix){
+        
         this.robot = father;
         this.matrix = matrix;
+        this.renew(new Dimension(matrix.getWidth(), matrix.getHeight()));
+        
+        this.return_mode = false;
         this.posible_move = Robot.DIRECTION_STOP;
+    }
+    public void renew(Dimension size){
+        
+        this.way = new Node(null,null);
+        this.return_mode = false;
+        this.posible_move = Robot.DIRECTION_STOP;
+        this.visit = new boolean[size.width][size.height];
+        this.object = new boolean[matrix.getWidth()][matrix.getHeight()];
+        
+        for (boolean[] bs : visit) {
+            for (boolean b : bs) {
+                b = false;
+            }    
+        }
+        for (boolean[] bs : object) {
+            for (boolean b : bs) {
+                b = false;
+            }    
+        }
     }
     public void changeDirection(){
         // AQUI VA LA LÓGICA
+        this.posible_move = Robot.DIRECTION_STOP;
             
-            this.distance = 9999;
-            this.posible_move = Robot.DIRECTION_STOP;
-            
-            if(!isBusyRight() && this.robot.direction != Robot.DIRECTION_LEFT){
-                if(Matrix.manhattan(new Point (this.robot.getParseX()+1,this.robot.getParseY()),
-                    this.robot.simulatorPanel.getFlag()) < distance){
-              
-                        this.distance = Matrix.manhattan(new Point (this.robot.getParseX()+1,this.robot.getParseY()),
-                                        this.robot.simulatorPanel.getFlag());
-                        this.posible_move = Robot.DIRECTION_RIGHT;
-                        System.out.println("Derecha");
-                }
+            if(return_mode){
+                returnMove();
+            }else{
+                simplyMove();
             }
-            if(!isBusyBottom() && this.robot.direction != Robot.DIRECTION_TOP){
-                if(Matrix.manhattan(new Point (this.robot.getParseX(),this.robot.getParseY()+1),
-                    this.robot.simulatorPanel.getFlag()) < distance){
-              
-                        this.distance = Matrix.manhattan(new Point (this.robot.getParseX(),this.robot.getParseY()+1),
-                                        this.robot.simulatorPanel.getFlag());
-                        this.posible_move = Robot.DIRECTION_BOTTOM;
-                        System.out.println("Abajo");
-                }
-            }
-            if(!isBusyLeft()  && this.robot.direction != Robot.DIRECTION_RIGHT){
-                if(Matrix.manhattan(new Point (this.robot.getParseX()-1,this.robot.getParseY()),
-                    this.robot.simulatorPanel.getFlag()) < distance){
-              
-                        this.distance = Matrix.manhattan(new Point (this.robot.getParseX()-1,this.robot.getParseY()),
-                                        this.robot.simulatorPanel.getFlag());
-                        this.posible_move = Robot.DIRECTION_LEFT;
-                        System.out.println("Izquierda");
-                }
-            }
-            if(!isBusyTop()  && this.robot.direction != Robot.DIRECTION_BOTTOM){
-                if(Matrix.manhattan(new Point (this.robot.getParseX(),this.robot.getParseY()-1),
-                    this.robot.simulatorPanel.getFlag()) < distance){
-              
-                        this.distance = Matrix.manhattan(new Point (this.robot.getParseX(),this.robot.getParseY()-1),
-                                        this.robot.simulatorPanel.getFlag());
-                        this.posible_move = Robot.DIRECTION_TOP;
-                        System.out.println("Arriba");
-                }
-            }
-            
-            
-        
-        
             
             //ejecuta
-                this.robot.direction = this.posible_move;
+            this.robot.direction = this.posible_move;
         
         //
         // FINALIZA
@@ -85,6 +74,11 @@ public class SensorMotion {
             this.robot.direction = Robot.DIRECTION_STOP;
             this.robot.actived = false;
             JOptionPane.showConfirmDialog(null, "El robot ha alcanzado su meta");
+            Node a = this.way;
+            while(a!= null){
+                System.out.println(a.getPoint());
+                a = a.getPrevious();
+            }
         }
     }
     public Point getPosition(){
@@ -101,5 +95,112 @@ public class SensorMotion {
     }
     public boolean isBusyLeft(){
         return matrix.isBusy(new Point(robot.getParseX()-1,robot.getParseY()));
+    }
+    // ------
+    public Point getTop(){
+        return new Point(robot.getParseX(),robot.getParseY()-1);
+    }
+    public Point getRight(){
+        return new Point(robot.getParseX()+1,robot.getParseY());
+    }
+    public Point getBottom(){
+        return new Point(robot.getParseX(),robot.getParseY()+1);
+    }
+    public Point getLeft(){
+        return new Point(robot.getParseX()-1,robot.getParseY());
+    }
+    // ------
+    
+    public void addVisit(Point p) {
+        this.visit[p.x][p.y] = true;
+    }
+
+    private boolean isVisited(Point p) {
+        return this.visit[p.x][p.y];
+    }
+    private void simplyMove(){
+        
+        this.way = this.way.add(new Point(this.robot.getParsePoint()));
+        System.out.println("Padre"+this.way.getPrevious().getPoint());
+        System.out.println("Yo"+this.way.getPoint());
+        System.out.println("----");
+        
+        
+        
+            this.distance = 9999;
+            this.posible_move = Robot.DIRECTION_STOP;
+            
+            if(!isBusyRight() && !isVisited(getRight())){
+                if(Matrix.manhattan(new Point (this.robot.getParseX()+1,this.robot.getParseY()),
+                    this.robot.simulatorPanel.getFlag()) < distance){
+              
+                        this.distance = Matrix.manhattan(new Point (this.robot.getParseX()+1,this.robot.getParseY()),
+                                        this.robot.simulatorPanel.getFlag());
+                        this.posible_move = Robot.DIRECTION_RIGHT;
+                        System.out.println("RIGHT");
+                }
+            }
+            if(!isBusyBottom() && !isVisited(getBottom())){
+                if(Matrix.manhattan(new Point (this.robot.getParseX(),this.robot.getParseY()+1),
+                    this.robot.simulatorPanel.getFlag()) < distance){
+              
+                        this.distance = Matrix.manhattan(new Point (this.robot.getParseX(),this.robot.getParseY()+1),
+                                        this.robot.simulatorPanel.getFlag());
+                        this.posible_move = Robot.DIRECTION_BOTTOM;
+                        System.out.println("BOTTOM");
+                }
+            }
+            if(!isBusyLeft() && !isVisited(getLeft())){
+                if(Matrix.manhattan(new Point (this.robot.getParseX()-1,this.robot.getParseY()),
+                    this.robot.simulatorPanel.getFlag()) < distance){
+              
+                        this.distance = Matrix.manhattan(new Point (this.robot.getParseX()-1,this.robot.getParseY()),
+                                        this.robot.simulatorPanel.getFlag());
+                        this.posible_move = Robot.DIRECTION_LEFT;
+                        System.out.println("LEFT");
+                }
+            }
+            if(!isBusyTop() && !isVisited(getTop())){
+                if(Matrix.manhattan(new Point (this.robot.getParseX(),this.robot.getParseY()-1),
+                    this.robot.simulatorPanel.getFlag()) < distance){
+              
+                        this.distance = Matrix.manhattan(new Point (this.robot.getParseX(),this.robot.getParseY()-1),
+                                        this.robot.simulatorPanel.getFlag());
+                        this.posible_move = Robot.DIRECTION_TOP;
+                        System.out.println("TOP");
+                }
+            }
+            // FALLO ;; MODO RETORNO
+            if(this.posible_move == Robot.DIRECTION_STOP){
+               this.return_mode = true;
+            }
+            //
+    }
+
+    private void returnMove() {
+        Point p = this.robot.getParsePoint();
+        Point d = this.way.getPrevious().getPoint();
+        
+        this.way = this.way.getPrevious();
+        this.way.setNext(null);
+        System.out.println("*****");
+        System.out.println(p+"  - d: "+d);
+        System.out.println("*****");
+        
+        if(p.x > d.x){
+            this.posible_move = Robot.DIRECTION_LEFT;
+            this.return_mode = false;
+        }else if(p.x < d.x){
+            this.posible_move = Robot.DIRECTION_RIGHT;
+            this.return_mode = false;
+        }else{
+            if(p.y > d.y){
+                this.posible_move = Robot.DIRECTION_TOP;
+                this.return_mode = false;
+            }else if(p.y < d.y){
+                this.posible_move = Robot.DIRECTION_BOTTOM;
+                this.return_mode = false;
+            }
+        }
     }
 }
