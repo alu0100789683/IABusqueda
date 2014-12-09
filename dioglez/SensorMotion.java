@@ -66,20 +66,25 @@ public class SensorMotion {
             
             //ejecuta
             this.robot.direction = this.posible_move;
-        
+        if(this.posible_move == Robot.DIRECTION_STOP &&
+                this.robot.getParsePoint().x == this.robot.ini.x &&
+                this.robot.getParsePoint().y == this.robot.ini.y){
+            JOptionPane.showConfirmDialog(null, "No existe una solución ");
+            this.robot.actived = false;
+        }
+            
         //
         // FINALIZA
         if(this.robot.getParseX()== this.robot.simulatorPanel.getFlag().x && 
                 this.robot.getParseY()== this.robot.simulatorPanel.getFlag().y){
             this.robot.direction = Robot.DIRECTION_STOP;
             this.robot.actived = false;
-            JOptionPane.showConfirmDialog(null, "El robot ha alcanzado su meta");
-            Node a = this.way;
-            while(a!= null){
-                System.out.println(a.getPoint());
-                a = a.getPrevious();
+            int resp = JOptionPane.showConfirmDialog(null, "El robot ha alcanzado su meta,  ¿Desea mostrar la ruta considerada optima por el robot?");
+            if(resp == JOptionPane.OK_OPTION){
+                robot.simulatorPanel.modFinalWay();
             }
         }
+        
     }
     public Point getPosition(){
         return new Point(robot.getParseX(),robot.getParseY());
@@ -186,7 +191,6 @@ public class SensorMotion {
         System.out.println("*****");
         System.out.println(p+"  - d: "+d);
         System.out.println("*****");
-        
         if(p.x > d.x){
             this.posible_move = Robot.DIRECTION_LEFT;
             this.return_mode = false;
@@ -201,6 +205,20 @@ public class SensorMotion {
                 this.posible_move = Robot.DIRECTION_BOTTOM;
                 this.return_mode = false;
             }
+        }
+    }
+
+    void renew() {
+        this.robot.simulatorPanel.showFinalWay=false;
+        this.way = new Node(null,null);
+        this.return_mode = false;
+        this.posible_move = Robot.DIRECTION_STOP;
+        this.visit = new boolean[this.matrix.getWidth()][this.matrix.getHeight()];
+        
+        for (boolean[] bs : visit) {
+            for (boolean b : bs) {
+                b = false;
+            }    
         }
     }
 }

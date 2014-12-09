@@ -6,13 +6,10 @@
 
 package org.dioglez;
 
-import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.HashMap;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
@@ -99,6 +96,9 @@ public class MouseController implements MouseListener{
                 break;
                 case "FinishInsertItemBar":
                     frame.matrixPanel.modFinish();
+                break;
+                case "MovePjItemBar":
+                    frame.matrixPanel.modMovePj();
                 break;
                 default:
                     JOptionPane.showMessageDialog(frame, "Aún no se ha definido esa funcionalidad","Error",JOptionPane.ERROR_MESSAGE);

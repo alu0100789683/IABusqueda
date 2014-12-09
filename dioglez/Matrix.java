@@ -19,19 +19,28 @@ import java.util.Random;
 public class Matrix {
     
     public boolean [][] busy;
+    public boolean [][] way_opt;
     private final SimulatorPanel panel;
     private Dimension size;
     private int span;
     
     public Matrix(int span, Dimension size, SimulatorPanel panel){
+        this.way_opt = new boolean[size.width][size.height];
         this.busy = new boolean[size.width][size.height];
-        
-        
         initBusy();
+        initWayOpt();
+        
         this.span = span;
         this.size = size;
         this.panel = panel;
      
+    }
+    private void initWayOpt(){
+        for (int i = 0 ; i<way_opt.length ; i++) {
+           for (int j = 0 ; j<way_opt[i].length; j++) {
+               way_opt[i][j] = false;
+           } 
+        }
     }
     private void initBusy(){
         for (int i = 0 ; i<busy.length ; i++) {
@@ -92,11 +101,12 @@ public class Matrix {
     void updateSize(int span, Dimension size) {
         Point parsep = parsePosition(new Point(size.width,size.height));
         
+        this.way_opt = new boolean[parsep.x][parsep.y];
         this.busy = new boolean[parsep.x][parsep.y];
-        this.panel.robot.sensor.renew(size);
-        
         initBusy();
+        initWayOpt();
         
+        this.panel.robot.sensor.renew(size);
         this.span = span;
         this.size = new Dimension(parsep.x,parsep.y);
         

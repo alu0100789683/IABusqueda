@@ -33,17 +33,22 @@ public class SimulatorPanel extends JPanel{
     public Matrix matrix;
     
     private boolean showFinish;
+    public boolean showFinalWay;
     private Image finishImg;
     private Point finishP;
     boolean isMoveFlag;
+    public boolean isMovePj;
+    public Image crossImg;
     
     public SimulatorPanel(Dimension size, int span){
         super();
         
         this.showMatrix = false;
         this.showFinish = false;
+        this.showFinalWay = false;
         this.finishP = new Point(0, 0);
         this.isMoveFlag = false;
+        this.isMovePj = false;
         this.span = span;
         this.size = convetDimension(size, span);
         this.setPreferredSize(this.size);
@@ -53,6 +58,7 @@ public class SimulatorPanel extends JPanel{
         this.printTerrain = false;
         this.printObject = false;
         this.printRobot = false;
+        
         
         SimulatorMouseController mc = new SimulatorMouseController(this);
         this.addMouseListener(mc);
@@ -72,7 +78,13 @@ public class SimulatorPanel extends JPanel{
                 }
             }
         }
-        
+        if(showFinalWay){
+            Node way = robot.sensor.way;
+            while (way != null & way.getPoint() != null) {                
+                g.drawImage(crossImg, matrix.screanerPosition(way.getPoint()).x, matrix.screanerPosition(way.getPoint()).y, finishImg.getWidth(this), finishImg.getHeight(this), this);
+                way = way.getPrevious();
+            }
+        }
         //STATE Generate random object
         if(printObject){
             for (int i = 0; i < matrix.getWidth(); i++) {
@@ -105,6 +117,7 @@ public class SimulatorPanel extends JPanel{
             String obstacleStr,
             String robotStr,
             String finishStr,
+            String crossStr,
             int robotLimitx, 
             int robotLimity, 
             int hardMove,
@@ -113,6 +126,8 @@ public class SimulatorPanel extends JPanel{
         this.span = span;
         this.background = Toolkit.getDefaultToolkit().createImage(backgroundStr);
         this.finishImg = Toolkit.getDefaultToolkit().createImage(finishStr);
+        this.crossImg = Toolkit.getDefaultToolkit().createImage(crossStr);
+        
         this.robot = new Robot(this,robotStr,robotLimitx, robotLimity, hardMove);
         this.obstacle = Toolkit.getDefaultToolkit().createImage(obstacleStr);
         
@@ -132,6 +147,13 @@ public class SimulatorPanel extends JPanel{
     public void destroy(){
     
     }
+    public void modMovePj(){
+        if(isMovePj){
+            isMovePj = false;
+        }else{
+            isMovePj = true;
+        }
+    }
     public void modFinish(){
         if(showFinish){
             if(isMoveFlag){
@@ -144,7 +166,9 @@ public class SimulatorPanel extends JPanel{
             showFinish = true;
         }
     }
-
+    public void modFinalWay(){
+        showFinalWay = true;
+    }
     private Dimension convetDimension(Dimension size, int span) {
         
         return new Dimension(size.width*span, size.height*span);
@@ -155,6 +179,8 @@ public class SimulatorPanel extends JPanel{
         this.size = convetDimension(size, span);
         this.setPreferredSize(this.size);
         this.matrix.updateSize(this.span, getPreferredSize());
+        
+        this.showFinalWay = false;
     }
     public Point getFlag(){
         return finishP;
@@ -170,8 +196,15 @@ public class SimulatorPanel extends JPanel{
     boolean isFinish() {
         return this.isMoveFlag;
     }
+    boolean isMovePj(){
+        return this.isMovePj;
+    }
 
     void addObjectFinish(Point p) {
         
+    }
+
+    void movePj(Point point) {
+        this.robot.setPosition(matrix.parsePosition(point));
     }
 }

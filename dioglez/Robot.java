@@ -26,6 +26,7 @@ public class Robot {
     public SensorMotion sensor;
     private AnimatedIcon image;
     private Point p;
+    public Point ini;
     public boolean actived;
     
     public int hardMove;
@@ -33,6 +34,7 @@ public class Robot {
     public Robot(SimulatorPanel father, String src,int limitx, int limity, int hardMove){
         this.direction = DIRECTION_RIGHT;
         this.p = new Point(0, 0);
+        this.ini = new Point(0, 0);
         this.simulatorPanel = father;
         this.sensor = new SensorMotion(this,this.simulatorPanel.matrix);
         this.actived = false;
@@ -120,5 +122,11 @@ public class Robot {
     public void reset() {
         this.actived = false;
         this.p = new Point(0, 0);
+    }
+
+    void setPosition(Point parsePosition) {
+        this.ini = parsePosition;
+        this.p = this.simulatorPanel.matrix.screanerPosition(parsePosition);
+        this.sensor.renew();
     }
 }

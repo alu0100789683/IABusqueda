@@ -36,8 +36,10 @@ public class MainFrame extends JFrame{
     private JMenuItem openItemBar;
     private JMenuItem saveItemBar;
     private JMenuItem saveAsItemBar;
+    
     private JMenuItem randomItemBar;
     private JMenuItem openInsertItemBar;
+    private JMenuItem movePj;
     
     private JMenuItem runItemBar;
     
@@ -71,6 +73,7 @@ public class MainFrame extends JFrame{
                 "src/org/texture/rock.png",
                 "src/org/texture/robot.png",
                 "src/org/texture/finish.png",
+                "src/org/texture/cross.png",
                 3,4,1,matrix_size);
         // End simulator panel
         
@@ -90,6 +93,7 @@ public class MainFrame extends JFrame{
         
         randomItemBar = new JMenuItem();
         openInsertItemBar = new JMenuItem();
+        movePj = new JMenuItem();
         
         runItemBar=new JMenuItem();
         
@@ -132,15 +136,19 @@ public class MainFrame extends JFrame{
         //design
         randomItemBar.setText("Generar obstaculos");
         openInsertItemBar.setText("Insertar meta");
+        movePj.setText("Mover el astronauta");
         
         randomItemBar.setName("RandomItemBar");
         openInsertItemBar.setName("FinishInsertItemBar");
+        movePj.setName("MovePjItemBar");
         
         randomItemBar.addMouseListener(new MouseController(this));
         openInsertItemBar.addMouseListener(new MouseController(this));
+        movePj.addMouseListener(new MouseController(this));
         
         designMenu.add(randomItemBar);
         designMenu.add(openInsertItemBar);
+        designMenu.add(movePj);
         //View
         
         showMatrixItemBar.setText("Mostrar/Ocultar area de trabajo");

@@ -37,6 +37,11 @@ public class SimulatorMouseController implements MouseMotionListener, MouseListe
                     panel.addObjectFinish(p);
                     panel.modFinish();
                 }
+            }else if(panel.isMovePj()){
+                if(panel.matrix.busy.length > p.x 
+                        && panel.matrix.busy[p.x].length > p.y){
+                    panel.modMovePj();
+                }
             }else{
                 if(panel.matrix.busy.length > p.x 
                         && panel.matrix.busy[p.x].length > p.y){
@@ -74,6 +79,9 @@ public class SimulatorMouseController implements MouseMotionListener, MouseListe
     public void mouseMoved(MouseEvent e) {
         if(panel.isMoveFlag){   
             panel.moveFlag(e.getPoint());
+        }
+        if(panel.isMovePj()){
+            panel.movePj(e.getPoint());    
         }
     }
 }
